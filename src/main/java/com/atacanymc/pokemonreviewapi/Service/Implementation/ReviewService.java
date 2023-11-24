@@ -38,6 +38,18 @@ public class ReviewService implements IReviewService {
                 .collect(java.util.stream.Collectors.toList());
     }
 
+    public List<ReviewDto> getReviewsByPokemonId(Long pokemonId) {
+        return reviewRepository.findByPokemonId(pokemonId).stream()
+                .map(reviewDtoConverter::convert)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    public List<ReviewDto> getReviewsByUserId(Long userId) {
+        return reviewRepository.findByReviewerId(userId).stream()
+                .map(reviewDtoConverter::convert)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
     @Override
     public ReviewDto createReview(CreateReviewRequest request) {
         Review review = new Review(
@@ -66,4 +78,5 @@ public class ReviewService implements IReviewService {
         reviewRepository.delete(review);
         return reviewDtoConverter.convert(review);
     }
+
 }

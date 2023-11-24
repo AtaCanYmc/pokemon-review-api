@@ -5,6 +5,7 @@ import com.atacanymc.pokemonreviewapi.DTOs.Request.User.*;
 import com.atacanymc.pokemonreviewapi.DTOs.Response.User.LoginResponse;
 import com.atacanymc.pokemonreviewapi.DTOs.Response.User.UserDto;
 import com.atacanymc.pokemonreviewapi.ENUMs.UserRole;
+import com.atacanymc.pokemonreviewapi.ENUMs.UserStatus;
 import com.atacanymc.pokemonreviewapi.Exception.User.UserAlreadyExistException;
 import com.atacanymc.pokemonreviewapi.Exception.User.UserNotFoundException;
 import com.atacanymc.pokemonreviewapi.Model.User;
@@ -32,6 +33,24 @@ public class UserService implements IUserService{
                 .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
     }
 
+    private void checkUserCreatable(String username, String email){
+        if (userRepository.existsByUsername(username)){
+            throw new UserAlreadyExistException("Username already exists");
+        }
+        if (userRepository.existsByEmail(email)){
+            throw new UserAlreadyExistException("Email already exists");
+        }
+    }
+
+    private void checkUserUpdatable(Long id, String username, String email){
+        if (userRepository.existsByUsername(username) && !userRepository.findByUsername(username).get().getId().equals(id)){
+            throw new UserAlreadyExistException("Username already exists");
+        }
+        if (userRepository.existsByEmail(email) && !userRepository.findByEmail(email).get().getId().equals(id)){
+            throw new UserAlreadyExistException("Email already exists");
+        }
+    }
+
     @Override
     public LoginResponse loginUser(LoginUserRequest request) {
         User user = findUserByUsername(request.getUsername());
@@ -45,17 +64,12 @@ public class UserService implements IUserService{
 
     @Override
     public UserDto registerUser(RegisterUserRequest request) {
-        if (userRepository.existsByUsername(request.getUsername())){
-            throw new UserAlreadyExistException("Username already exists");
-        }
-        if (userRepository.existsByEmail(request.getEmail())){
-            throw new UserAlreadyExistException("Email already exists");
-        }
+        checkUserCreatable(request.getUsername(), request.getEmail());
 
         User user = new User(
                 request.getUsername(),
-                request.getEmail(),
                 encryptionService.encryptPassword(request.getPassword()),
+                request.getEmail(),
                 UserRole.USER
         );
 
@@ -82,6 +96,11 @@ public class UserService implements IUserService{
         return userDtoConverter.convert(user);
     }
 
+    public UserDto getUserByUsername(String username) {
+        User user = findUserByUsername(username);
+        return userDtoConverter.convert(user);
+    }
+
     @Override
     public List<UserDto> getAllUsers() {
         List<UserDto> users = userRepository.findAll()
@@ -93,10 +112,11 @@ public class UserService implements IUserService{
 
     @Override
     public UserDto createUser(CreateUserRequest request) {
+        checkUserCreatable(request.getUsername(), request.getEmail());
         User user = new User(
                 request.getUsername(),
-                request.getEmail(),
                 encryptionService.encryptPassword(request.getPassword()),
+                request.getEmail(),
                 UserRole.fromInteger(request.getRole())
         );
         return userDtoConverter.convert(userRepository.save(user));
@@ -105,8 +125,21 @@ public class UserService implements IUserService{
     @Override
     public UserDto updateUser(UpdateUserRequest request, Long id) {
         User user = findUserById(id);
+        checkUserUpdatable(id, request.getUsername(), request.getEmail());
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
+        return userDtoConverter.convert(userRepository.save(user));
+    }
+
+    public UserDto updateUserStatus(Long id, int status) {
+        User user = findUserById(id);
+        user.setStatus(UserStatus.fromInteger(status));
+        return userDtoConverter.convert(userRepository.save(user));
+    }
+
+    public UserDto updateUserRole(Long id, int role) {
+        User user = findUserById(id);
+        user.setRole(UserRole.fromInteger(role));
         return userDtoConverter.convert(userRepository.save(user));
     }
 
@@ -116,4 +149,5 @@ public class UserService implements IUserService{
         userRepository.delete(user);
         return userDtoConverter.convert(user);
     }
+
 }
