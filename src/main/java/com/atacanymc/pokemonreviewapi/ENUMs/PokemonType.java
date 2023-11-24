@@ -1,4 +1,9 @@
 package com.atacanymc.pokemonreviewapi.ENUMs;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public enum PokemonType {
     FIRE(1),
     WATER(2),
@@ -16,15 +21,8 @@ public enum PokemonType {
     FLYING(14),
     POISON(15);
 
-    private int id;
-
-    private PokemonType(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
+    @Getter
+    private final int id;
 
     public static PokemonType fromId(int id) {
         return switch (id) {
