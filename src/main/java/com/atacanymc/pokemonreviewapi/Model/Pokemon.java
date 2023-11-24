@@ -22,5 +22,5 @@ public class Pokemon {
     private PokemonType type;
 
     @OneToMany(mappedBy = "pokemon", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<PokemonReview> reviews = new HashSet<>();
+    private Set<Review> reviews = new HashSet<>();
 }

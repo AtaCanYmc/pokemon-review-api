@@ -1,11 +1,11 @@
 package com.atacanymc.pokemonreviewapi.Repository;
 
-import com.atacanymc.pokemonreviewapi.Model.PokemonReview;
+import com.atacanymc.pokemonreviewapi.Model.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface PokemonReviewRepository extends JpaRepository<PokemonReview, Long> {
-    List<PokemonReview> findByPokemonId(Long pokemonId);
-    List<PokemonReview> findByUserId(Long userId);
+public interface PokemonReviewRepository extends JpaRepository<Review, Long> {
+    List<Review> findByPokemonId(Long pokemonId);
+    List<Review> findByUserId(Long userId);
 }

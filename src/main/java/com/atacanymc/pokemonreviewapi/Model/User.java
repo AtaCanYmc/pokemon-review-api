@@ -25,5 +25,5 @@ public class User {
     private UserRole role;
 
     @OneToMany(mappedBy = "reviewer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<PokemonReview> reviews = new HashSet<>();
+    private Set<Review> reviews = new HashSet<>();
 }
