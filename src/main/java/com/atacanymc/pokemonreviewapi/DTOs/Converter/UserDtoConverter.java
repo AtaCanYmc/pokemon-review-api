@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserDtoConverter {
-    public static UserDto convert(User user) {
+    public UserDto convert(User user) {
         return new UserDto(user.getId(),
                 user.getUsername(),
                 user.getEmail(),

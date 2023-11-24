@@ -26,4 +26,13 @@ public class User {
 
     @OneToMany(mappedBy = "reviewer", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Review> reviews = new HashSet<>();
+
+    public User(String username, String password, String email, UserRole role) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.status = UserStatus.ACTIVE;
+        this.role = role;
+    }
+
 }

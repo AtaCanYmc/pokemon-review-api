@@ -24,4 +24,12 @@ public class Review {
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "rewiever_id")
     private User reviewer;
+
+    public Review(String title, String body, int rating, Pokemon pokemon, User reviewer) {
+        this.title = title;
+        this.body = body;
+        this.rating = rating;
+        this.pokemon = pokemon;
+        this.reviewer = reviewer;
+    }
 }

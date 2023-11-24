@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ReviewDtoConverter {
-    public static ReviewDto convert(Review review) {
+    public ReviewDto convert(Review review) {
         return new ReviewDto(review.getId(),
                 review.getTitle(),
                 review.getBody(),
