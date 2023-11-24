@@ -5,6 +5,8 @@ import com.atacanymc.pokemonreviewapi.DTOs.Request.Pokemon.CreatePokemonRequest;
 import com.atacanymc.pokemonreviewapi.DTOs.Request.Pokemon.UpdatePokemonRequest;
 import com.atacanymc.pokemonreviewapi.DTOs.Response.Pokemon.PokemonDto;
 import com.atacanymc.pokemonreviewapi.ENUMs.PokemonType;
+import com.atacanymc.pokemonreviewapi.Exception.Pokemon.PokemonAlreadyExistException;
+import com.atacanymc.pokemonreviewapi.Exception.Pokemon.PokemonNotFoundException;
 import com.atacanymc.pokemonreviewapi.Model.Pokemon;
 import com.atacanymc.pokemonreviewapi.Service.Interface.IPokemonService;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +23,12 @@ public class PokemonService implements IPokemonService {
 
     protected Pokemon findPokemonById(Long id){
         return pokemonRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new PokemonNotFoundException("Pokemon not found with id: " + id));
     }
 
     protected Pokemon findPokemonByName(String name){
         return pokemonRepository.findByName(name)
-                .orElseThrow();
+                .orElseThrow(() -> new PokemonNotFoundException("Pokemon not found with name: " + name));
     }
 
     @Override
@@ -48,7 +50,7 @@ public class PokemonService implements IPokemonService {
     @Override
     public PokemonDto createPokemon(CreatePokemonRequest request) {
         if (pokemonRepository.existsByName(request.getName())){
-            throw new RuntimeException("Pokemon already exists");
+            throw new PokemonAlreadyExistException("Pokemon already exists");
         }
 
         Pokemon pokemon = new Pokemon(

@@ -5,6 +5,8 @@ import com.atacanymc.pokemonreviewapi.DTOs.Request.User.*;
 import com.atacanymc.pokemonreviewapi.DTOs.Response.User.LoginResponse;
 import com.atacanymc.pokemonreviewapi.DTOs.Response.User.UserDto;
 import com.atacanymc.pokemonreviewapi.ENUMs.UserRole;
+import com.atacanymc.pokemonreviewapi.Exception.User.UserAlreadyExistException;
+import com.atacanymc.pokemonreviewapi.Exception.User.UserNotFoundException;
 import com.atacanymc.pokemonreviewapi.Model.User;
 import com.atacanymc.pokemonreviewapi.Repository.UserRepository;
 import com.atacanymc.pokemonreviewapi.Service.Interface.IUserService;
@@ -22,12 +24,12 @@ public class UserService implements IUserService{
 
     protected User findUserById(Long id){
         return userRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id);
     }
 
     protected User findUserByUsername(String username){
         return userRepository.findByUsername(username)
-                .orElseThrow();
+                .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
     }
 
     @Override
@@ -37,17 +39,17 @@ public class UserService implements IUserService{
             return new LoginResponse("", "", user.getRole());
         }
         else{
-            throw new RuntimeException("Invalid password");
+            throw new UserNotFoundException("Invalid username or password");
         }
     }
 
     @Override
     public UserDto registerUser(RegisterUserRequest request) {
         if (userRepository.existsByUsername(request.getUsername())){
-            throw new RuntimeException("Username already exists");
+            throw new UserAlreadyExistException("Username already exists");
         }
         if (userRepository.existsByEmail(request.getEmail())){
-            throw new RuntimeException("Email already exists");
+            throw new UserAlreadyExistException("Email already exists");
         }
 
         User user = new User(
@@ -70,7 +72,7 @@ public class UserService implements IUserService{
             return userDtoConverter.convert(user);
         }
         else{
-            throw new RuntimeException("Invalid password");
+            throw new UserNotFoundException("Invalid password");
         }
     }
 

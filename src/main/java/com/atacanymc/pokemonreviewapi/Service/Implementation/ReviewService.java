@@ -4,6 +4,7 @@ import com.atacanymc.pokemonreviewapi.DTOs.Converter.ReviewDtoConverter;
 import com.atacanymc.pokemonreviewapi.DTOs.Request.Review.CreateReviewRequest;
 import com.atacanymc.pokemonreviewapi.DTOs.Request.Review.UpdateReviewRequest;
 import com.atacanymc.pokemonreviewapi.DTOs.Response.Review.ReviewDto;
+import com.atacanymc.pokemonreviewapi.Exception.Review.ReviewNotFoundException;
 import com.atacanymc.pokemonreviewapi.Model.Review;
 import com.atacanymc.pokemonreviewapi.Service.Interface.IReviewService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class ReviewService implements IReviewService {
 
     protected Review findReviewById(Long id){
         return reviewRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new ReviewNotFoundException("Review not found with id: " + id));
     }
 
     @Override
