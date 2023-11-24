@@ -24,7 +24,7 @@ public class UserService implements IUserService{
 
     protected User findUserById(Long id){
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id);
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
     }
 
     protected User findUserByUsername(String username){
