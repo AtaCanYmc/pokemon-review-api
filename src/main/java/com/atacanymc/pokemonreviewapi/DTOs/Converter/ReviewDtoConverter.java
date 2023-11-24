@@ -4,10 +4,14 @@ import com.atacanymc.pokemonreviewapi.DTOs.Response.Review.PokemonReviewDto;
 import com.atacanymc.pokemonreviewapi.DTOs.Response.Review.ReviewDto;
 import com.atacanymc.pokemonreviewapi.DTOs.Response.Review.UserReviewDto;
 import com.atacanymc.pokemonreviewapi.Model.Review;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+@RequiredArgsConstructor
 @Component
 public class ReviewDtoConverter {
+    private final PokemonDtoConverter pokemonDtoConverter;
+    private final UserDtoConverter userDtoConverter;
     public ReviewDto convert(Review review) {
         return new ReviewDto(review.getId(),
                 review.getTitle(),
@@ -17,19 +21,19 @@ public class ReviewDtoConverter {
                 review.getReviewer().getId());
     }
 
-    public static UserReviewDto convertUserReview(Review review) {
+    public UserReviewDto convertUserReview(Review review) {
         return new UserReviewDto(review.getId(),
                 review.getTitle(),
                 review.getBody(),
                 review.getRating(),
-                PokemonDtoConverter.convert(review.getPokemon()));
+                pokemonDtoConverter.convert(review.getPokemon()));
     }
 
-    public static PokemonReviewDto convertPokemonReview(Review review) {
+    public PokemonReviewDto convertPokemonReview(Review review) {
         return new PokemonReviewDto(review.getId(),
                 review.getTitle(),
                 review.getBody(),
                 review.getRating(),
-                UserDtoConverter.convert(review.getReviewer()));
+                userDtoConverter.convert(review.getReviewer()));
     }
 }
