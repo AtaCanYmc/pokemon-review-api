@@ -14,6 +14,8 @@ public class ExceptionResponse {
     private LocalDateTime timestamp;
     private String message;
     private String debugMessage;
+    private String path;
+    private String error;
 
     private ExceptionResponse() {
         timestamp = LocalDateTime.now();
@@ -29,6 +31,8 @@ public class ExceptionResponse {
         this.status = status;
         this.message = "Unexpected error";
         this.debugMessage = ex.getLocalizedMessage();
+        this.path = ex.getStackTrace()[0].getClassName();
+        this.error = ex.getClass().getSimpleName();
     }
 
     public ExceptionResponse(HttpStatus status, String message, Throwable ex) {
@@ -36,5 +40,7 @@ public class ExceptionResponse {
         this.status = status;
         this.message = message;
         this.debugMessage = ex.getLocalizedMessage();
+        this.path = ex.getStackTrace()[0].getClassName();
+        this.error = ex.getClass().getSimpleName();
     }
 }

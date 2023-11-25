@@ -11,6 +11,7 @@ import com.atacanymc.pokemonreviewapi.Exception.User.UserNotFoundException;
 import com.atacanymc.pokemonreviewapi.Model.User;
 import com.atacanymc.pokemonreviewapi.Repository.UserRepository;
 import com.atacanymc.pokemonreviewapi.Service.Interface.IUserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -78,8 +79,8 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public UserDto changePassword(ChangePasswordRequest request, Long id) {
-        User user = findUserById(id);
+    public UserDto changePassword(ChangePasswordRequest request) {
+        User user = findUserByUsername(request.getUsername());
         if (encryptionService.verifyPassword(request.getPassword(), user.getPassword())){
             user.setPassword(encryptionService.encryptPassword(request.getNewPassword()));
             userRepository.save(user);

@@ -1,5 +1,6 @@
 package com.atacanymc.pokemonreviewapi.Controller;
 
+import com.atacanymc.pokemonreviewapi.DTOs.Request.User.ChangePasswordRequest;
 import com.atacanymc.pokemonreviewapi.DTOs.Request.User.LoginUserRequest;
 import com.atacanymc.pokemonreviewapi.DTOs.Request.User.RegisterUserRequest;
 import com.atacanymc.pokemonreviewapi.DTOs.Response.User.LoginResponse;
@@ -26,6 +27,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginUserRequest request) {
         return ResponseEntity.ok(userService.loginUser(request));
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<UserDto> changePassword(@RequestBody ChangePasswordRequest request) {
+        return ResponseEntity.ok(userService.changePassword(request));
     }
 
 }

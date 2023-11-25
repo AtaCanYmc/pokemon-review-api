@@ -4,8 +4,8 @@ import com.atacanymc.pokemonreviewapi.DTOs.Request.User.CreateUserRequest;
 import com.atacanymc.pokemonreviewapi.DTOs.Request.User.UpdateUserRequest;
 import com.atacanymc.pokemonreviewapi.DTOs.Response.User.UserDto;
 import com.atacanymc.pokemonreviewapi.Service.Implementation.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
