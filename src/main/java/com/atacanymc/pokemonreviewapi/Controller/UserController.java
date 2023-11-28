@@ -1,5 +1,6 @@
 package com.atacanymc.pokemonreviewapi.Controller;
 
+import com.atacanymc.pokemonreviewapi.DTOs.Request.User.ChangePasswordRequest;
 import com.atacanymc.pokemonreviewapi.DTOs.Request.User.CreateUserRequest;
 import com.atacanymc.pokemonreviewapi.DTOs.Request.User.UpdateUserRequest;
 import com.atacanymc.pokemonreviewapi.DTOs.Response.User.UserDto;
@@ -50,6 +51,11 @@ public class UserController {
     @PatchMapping("/role/{id}")
     public ResponseEntity<UserDto> updateUserRole(@PathVariable Long id, @RequestParam(name = "role", required = true, defaultValue = "1") int role) {
         return ResponseEntity.ok(userService.updateUserRole(id, role));
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<UserDto> changePassword(@RequestBody ChangePasswordRequest request) {
+        return ResponseEntity.ok(userService.changePassword(request));
     }
 
     @DeleteMapping("/{id}")

@@ -11,8 +11,8 @@ import com.atacanymc.pokemonreviewapi.Exception.User.UserNotFoundException;
 import com.atacanymc.pokemonreviewapi.Model.User;
 import com.atacanymc.pokemonreviewapi.Repository.UserRepository;
 import com.atacanymc.pokemonreviewapi.Service.Interface.IUserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import static java.util.stream.Collectors.toList;
@@ -22,7 +22,7 @@ import static java.util.stream.Collectors.toList;
 public class UserService implements IUserService{
     private final UserRepository userRepository;
     private final UserDtoConverter userDtoConverter;
-    private final EncryptionService encryptionService;
+    private final PasswordEncoder passwordEncoder;
 
     protected User findUserById(Long id){
         return userRepository.findById(id)
@@ -52,37 +52,16 @@ public class UserService implements IUserService{
         }
     }
 
-    @Override
-    public LoginResponse loginUser(LoginUserRequest request) {
-        User user = findUserByUsername(request.getUsername());
-        if (encryptionService.verifyPassword(request.getPassword(), user.getPassword())){
-            return new LoginResponse("", "", user.getRole());
-        }
-        else{
-            throw new UserNotFoundException("Invalid username or password");
-        }
-    }
-
-    @Override
-    public UserDto registerUser(RegisterUserRequest request) {
-        checkUserCreatable(request.getUsername(), request.getEmail());
-
-        User user = new User(
-                request.getUsername(),
-                encryptionService.encryptPassword(request.getPassword()),
-                request.getEmail(),
-                UserRole.USER
-        );
-
-        userRepository.save(user);
-        return userDtoConverter.convert(user);
+    protected User saveUser(User user){
+        checkUserCreatable(user.getUsername(), user.getEmail());
+        return userRepository.save(user);
     }
 
     @Override
     public UserDto changePassword(ChangePasswordRequest request) {
         User user = findUserByUsername(request.getUsername());
-        if (encryptionService.verifyPassword(request.getPassword(), user.getPassword())){
-            user.setPassword(encryptionService.encryptPassword(request.getNewPassword()));
+        if (passwordEncoder.matches(request.getPassword(), user.getPassword())){
+            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
             userRepository.save(user);
             return userDtoConverter.convert(user);
         }
@@ -113,14 +92,14 @@ public class UserService implements IUserService{
 
     @Override
     public UserDto createUser(CreateUserRequest request) {
-        checkUserCreatable(request.getUsername(), request.getEmail());
         User user = new User(
                 request.getUsername(),
-                encryptionService.encryptPassword(request.getPassword()),
+                passwordEncoder.encode(request.getPassword()),
                 request.getEmail(),
                 UserRole.fromInteger(request.getRole())
         );
-        return userDtoConverter.convert(userRepository.save(user));
+
+        return userDtoConverter.convert(saveUser(user));
     }
 
     @Override

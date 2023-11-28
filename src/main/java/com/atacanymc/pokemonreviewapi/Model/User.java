@@ -8,19 +8,23 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
 @Entity @Table(name = "users")
-public class User {
+public class User implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "Username cannot be blank")
+    @Column(unique = true)
     private String username;
 
     @NotBlank(message = "Password cannot be blank")
@@ -28,6 +32,7 @@ public class User {
 
     @NotBlank(message = "Email cannot be blank")
     @Email(message = "Email should be valid")
+    @Column(unique = true)
     private String email;
 
     @Enumerated(EnumType.STRING)
@@ -48,4 +53,28 @@ public class User {
         this.role = role;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return role.getAuthorities();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.status == UserStatus.ACTIVE;
+    }
 }

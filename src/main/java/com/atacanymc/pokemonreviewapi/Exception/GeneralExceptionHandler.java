@@ -10,6 +10,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -64,6 +65,12 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.BAD_REQUEST, messages.toString(), exception);
+        return buildResponseEntity(exceptionResponse);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException exception) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(HttpStatus.UNAUTHORIZED, "Invalid credentials", exception);
         return buildResponseEntity(exceptionResponse);
     }
 

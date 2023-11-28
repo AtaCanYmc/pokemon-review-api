@@ -21,6 +21,7 @@ public class Pokemon {
     private Long id;
 
     @NotBlank(message = "Name cannot be blank")
+    @Column(unique = true)
     private String name;
 
     @Enumerated(EnumType.STRING)

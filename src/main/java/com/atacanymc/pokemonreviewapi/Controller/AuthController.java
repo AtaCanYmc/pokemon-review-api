@@ -1,11 +1,9 @@
 package com.atacanymc.pokemonreviewapi.Controller;
 
-import com.atacanymc.pokemonreviewapi.DTOs.Request.User.ChangePasswordRequest;
 import com.atacanymc.pokemonreviewapi.DTOs.Request.User.LoginUserRequest;
 import com.atacanymc.pokemonreviewapi.DTOs.Request.User.RegisterUserRequest;
 import com.atacanymc.pokemonreviewapi.DTOs.Response.User.LoginResponse;
-import com.atacanymc.pokemonreviewapi.DTOs.Response.User.UserDto;
-import com.atacanymc.pokemonreviewapi.Service.Implementation.UserService;
+import com.atacanymc.pokemonreviewapi.Service.Implementation.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,21 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/pokemon-api/auth")
 public class AuthController {
-    private final UserService userService;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserDto> register(@RequestBody RegisterUserRequest request) {
-        return ResponseEntity.ok(userService.registerUser(request));
+    public ResponseEntity<LoginResponse> register(@RequestBody RegisterUserRequest request) {
+        return ResponseEntity.ok(authenticationService.registerUser(request));
     }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginUserRequest request) {
-        return ResponseEntity.ok(userService.loginUser(request));
-    }
-
-    @PostMapping("/change-password")
-    public ResponseEntity<UserDto> changePassword(@RequestBody ChangePasswordRequest request) {
-        return ResponseEntity.ok(userService.changePassword(request));
+        return ResponseEntity.ok(authenticationService.loginUser(request));
     }
 
 }
